@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const compiler = require('vue-template-compiler');
-
+const swc = require("@swc/core");
 const filePath = 'example.vue';
 const vueFile = `
 <template>
@@ -9,7 +9,7 @@ const vueFile = `
 
 <script>
 export default {
-  data() {
+  data():void {
     return {
       message: 'Hello, World!'
     };
@@ -30,7 +30,35 @@ export default {
 `;
 const { script } = compiler.parseComponent(vueFile);
 console.log(script.content);
-
+swc
+  .transform(script.content, {
+    // Some options cannot be specified in .swcrc
+    // Input files are treated as module by default.
+    isModule: true,
+    module: {
+      type: "es6",
+    },
+    // All options below can be configured via .swcrc
+    jsc: {
+      parser: {
+        syntax: "typescript",
+        tsx: false,
+      },
+      target: "es2022",
+      loose: false,
+      minify: {
+        compress: false,
+        mangle: false,
+      },
+    },
+  })
+  .then((output) => {
+    output.code; // transformed code
+    console.log(output.code);
+    output.map; // source map (in string)
+  }).catch(err => {
+    console.error(err);
+  })
 
 
 async function extractScript() {
