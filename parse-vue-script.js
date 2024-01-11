@@ -8,8 +8,16 @@ const vueFile = `
 </template>
 
 <script>
+export enum FixedType {
+  LEFT = 'left',
+  RIGHT = 'right',
+}
+
+export enum Test {
+  中文测试 = '中文测试',
+}
 export default {
-  data():void {
+  data():void { // test
     return {
       message: 'Hello, World!'
     };
@@ -30,6 +38,7 @@ export default {
 `;
 const { script } = compiler.parseComponent(vueFile);
 console.log(script.content);
+
 swc
   .transform(script.content, {
     // Some options cannot be specified in .swcrc
@@ -54,22 +63,11 @@ swc
   })
   .then((output) => {
     output.code; // transformed code
-    console.log(output.code);
+    // console.log(output.code);
+    console.log(vueFile.replace(script.content, output.code), '替换之后的 vue 文件');
     output.map; // source map (in string)
   }).catch(err => {
     console.error(err);
   })
 
 
-async function extractScript() {
-  try {
-    const fileContent = await fs.readFile(filePath, 'utf-8');
-    const { script } = compiler.parseComponent(fileContent);
-    const scriptContent = script ? script.content : '';
-    console.log('Script extracted successfully:', scriptContent);
-  } catch (err) {
-    console.error('Error extracting script:', err);
-  }
-}
-
-// extractScript();
