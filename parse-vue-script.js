@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 const compiler = require('vue-template-compiler');
 const swc = require("@swc/core");
 const filePath = 'example.vue';
+const { parse } = require('@vue/compiler-sfc');
 const vueFile = `
 <template>
   <div>Hello, Vue!</div>
@@ -37,8 +38,37 @@ export default {
 </style>
 `;
 const { script } = compiler.parseComponent(vueFile);
-console.log(script.content);
+// console.log(script.content);
+// fs.readFile('./HelloWorld.vue', (err, data) => {
+//   if (err) {
+//     console.error('Error reading file:', err);
+//   } else {
+//     console.log(data.toString(), 'File content:');
+//     const { script } = compiler.parseComponent(data.toString());
 
+//     console.error(script, '脚本部分');
+//   }
+// })
+
+// 编译 vue3 文件
+async function compileVueFile() {
+  const filePath = './HelloWorld.vue'
+  try {
+    const fileContent = await fs.readFile(filePath, 'utf-8');
+    const { descriptor } = parse(fileContent, {
+      filename: filePath,
+    });
+    // console.log(descriptor);
+    const scriptContent = descriptor.script?.content;
+    const scriptSetupContent = descriptor.scriptSetup?.content;
+    console.log('Script extracted successfully:', scriptContent);
+    console.log('Script extracted successfully:', scriptSetupContent);
+  } catch (err) {
+    console.error('Error compiling Vue file:', err);
+  }
+}
+
+compileVueFile();
 swc
   .transform(script.content, {
     // Some options cannot be specified in .swcrc
