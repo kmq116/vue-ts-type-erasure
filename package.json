@@ -1,11 +1,11 @@
 {
-  "name": "vue-compiler",
-  "version": "1.0.0",
+  "name": "@acvqu/vue-ts-erasure",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "vitest",
-    "start": "nodemon --exec esno ./parse-vue-script.ts"
+    "start": "nodemon --exec esno src/index.ts"
   },
   "author": "",
   "license": "ISC",

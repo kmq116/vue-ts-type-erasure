@@ -2,7 +2,6 @@ import fs from "fs-extra";
 import * as swc from "@swc/core";
 import { parse } from "@vue/compiler-sfc";
 import { swcOptions } from "./swcOptions";
-import { vueFile } from "./example";
 
 // 编译 vue3 文件
 async function compileVueFile() {
@@ -22,7 +21,7 @@ async function compileVueFile() {
   }
 }
 
-const filePath = "./HelloWorld.vue";
+const filePath = "src/HelloWorld.vue";
 export async function getVueFileScriptContent() {
   try {
     const fileContent = await fs.readFile(filePath, "utf-8");
@@ -43,11 +42,6 @@ export async function getVueFileScriptContent() {
   }
 }
 
-getVueFileScriptContent().then(({ script, sourceCode }) => {
-  console.log(script, sourceCode);
-
-  typescriptTypeErasure({ script, sourceCode });
-});
 export function typescriptTypeErasure({ script, sourceCode }) {
   return new Promise((resolve, reject) => {
     swc
